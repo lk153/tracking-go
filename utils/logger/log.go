@@ -2,7 +2,6 @@ package logger
 
 import (
 	"log"
-	"time"
 
 	"github.com/getsentry/sentry-go"
 )
@@ -15,5 +14,4 @@ func InitLogger() {
 	if err != nil {
 		log.Fatalf("sentry.Init: %s", err)
 	}
-	defer sentry.Flush(2 * time.Second)
 }

@@ -9,11 +9,13 @@ import (
 
 	"factory/exam/utils/logger"
 	"factory/exam/utils/shutdown"
+	"factory/exam/utils/tracer"
 )
 
 //Manager ...
 type Manager struct {
-	httpServer *HTTPServer
+	httpServer  *HTTPServer
+	tracerFlush func()
 }
 
 //NewServerManager ...
@@ -28,6 +30,7 @@ func NewServerManager(
 //StartAll ...
 func (m *Manager) StartAll(parentCtx context.Context) error {
 	logger.InitLogger()
+	m.tracerFlush = tracer.InitTracer()
 	eg, ctx := errgroup.WithContext(parentCtx)
 	eg.Go(func() error {
 		return shutdown.BlockListen(ctx, m.httpServer)
@@ -39,5 +42,6 @@ func (m *Manager) StartAll(parentCtx context.Context) error {
 //CloseAll ...
 func (m *Manager) CloseAll() error {
 	sentry.Flush(2 * time.Second)
+	m.tracerFlush()
 	return nil
 }

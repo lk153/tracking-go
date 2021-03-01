@@ -1,5 +1,7 @@
 package repo
 
+import "context"
+
 //ProductModel ...
 type ProductModel struct {
 	Name   string  `faker:"name"`
@@ -10,5 +12,5 @@ type ProductModel struct {
 
 //ProductRepoInterface ...
 type ProductRepoInterface interface {
-	GetProduct() *ProductModel
+	GetProduct(context context.Context) *ProductModel
 }

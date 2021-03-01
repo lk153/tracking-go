@@ -14,3 +14,6 @@ di: $(WIRE)
 
 build: 
 	go build -o $(DIST_DIR) ./cmd
+
+run: 
+	./$(DIST_DIR)

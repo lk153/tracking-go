@@ -33,6 +33,6 @@ func (h *ProductHandler) Get(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	products := h.services.GetProducts(uint32(limit))
+	products := h.services.GetProducts(req.Context(), uint32(limit))
 	responseSuccess(resp, req, products)
 }

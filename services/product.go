@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"factory/exam/repo"
 )
 
@@ -21,10 +22,10 @@ type ProductService struct {
 }
 
 //GetProducts ...
-func (ps *ProductService) GetProducts(limit uint32) []*repo.ProductModel {
+func (ps *ProductService) GetProducts(ctx context.Context, limit uint32) []*repo.ProductModel {
 	var products []*repo.ProductModel
 	for i := uint32(0); i < limit; i++ {
-		prod := ps.productRepo.GetProduct()
+		prod := ps.productRepo.GetProduct(ctx)
 		products = append(products, prod)
 	}
 
