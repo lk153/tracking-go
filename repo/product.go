@@ -32,8 +32,11 @@ func (p *ProductRepoImp) GetProduct(ctx context.Context) *ProductModel {
 	defer span.End()
 
 	product := &ProductModel{}
+	span.SetAttributes(label.KeyValue{
+		Key:   label.Key("name"),
+		Value: label.StringValue("Viet Nguyen"),
+	})
 
-	span.SetAttributes(label.KeyValue{label.Key("name"), label.StringValue("Viet Nguyen")})
 	span.AddEvent("faker.FakeData")
 	err := faker.FakeData(&product)
 	span.AddEvent("end faker.FakeData")

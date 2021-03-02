@@ -3,6 +3,8 @@ package services
 import (
 	"context"
 	"factory/exam/repo"
+
+	"golang.org/x/sync/errgroup"
 )
 
 var _ ProductServiceInterface = &ProductService{}
@@ -24,9 +26,32 @@ type ProductService struct {
 //GetProducts ...
 func (ps *ProductService) GetProducts(ctx context.Context, limit uint32) []*repo.ProductModel {
 	var products []*repo.ProductModel
+	var prodChan = make(chan *repo.ProductModel)
+	g, ctx := errgroup.WithContext(ctx)
 	for i := uint32(0); i < limit; i++ {
-		prod := ps.productRepo.GetProduct(ctx)
+		g.Go(func() error {
+			prod := ps.productRepo.GetProduct(ctx)
+
+			select {
+			case prodChan <- prod:
+			case <-ctx.Done():
+				return ctx.Err()
+			}
+			return nil
+		})
+	}
+
+	go func() {
+		g.Wait()
+		close(prodChan)
+	}()
+
+	for prod := range prodChan {
 		products = append(products, prod)
+	}
+
+	if err := g.Wait(); err != nil {
+		return nil
 	}
 
 	return products
