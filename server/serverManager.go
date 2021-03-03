@@ -14,16 +14,19 @@ import (
 
 //Manager ...
 type Manager struct {
-	httpServer  *HTTPServer
-	tracerFlush func()
+	httpServer   *HTTPServer
+	metricServer *MetricServer
+	tracerFlush  func()
 }
 
 //NewServerManager ...
 func NewServerManager(
 	httpServer *HTTPServer,
+	metricServer *MetricServer,
 ) *Manager {
 	return &Manager{
-		httpServer: httpServer,
+		httpServer:   httpServer,
+		metricServer: metricServer,
 	}
 }
 
@@ -34,6 +37,9 @@ func (m *Manager) StartAll(parentCtx context.Context) error {
 	eg, ctx := errgroup.WithContext(parentCtx)
 	eg.Go(func() error {
 		return shutdown.BlockListen(ctx, m.httpServer)
+	})
+	eg.Go(func() error {
+		return shutdown.BlockListen(ctx, m.metricServer)
 	})
 
 	return eg.Wait()

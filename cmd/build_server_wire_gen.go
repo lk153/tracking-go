@@ -7,6 +7,7 @@ package main
 
 import (
 	"context"
+	"factory/exam/config"
 	"factory/exam/handler"
 	"factory/exam/repo"
 	"factory/exam/server"
@@ -20,6 +21,11 @@ func buildServer(ctx context.Context) (*server.Manager, error) {
 	productService := services.ProductProvider(productRepoImp)
 	productHandler := handler.ProductHandlerProvider(productService)
 	httpServer := server.HTTPProvider(productHandler)
-	manager := server.NewServerManager(httpServer)
+	metricPort := config.ProvideMetricPort()
+	metricServer, err := server.NewMetricServer(metricPort)
+	if err != nil {
+		return nil, err
+	}
+	manager := server.NewServerManager(httpServer, metricServer)
 	return manager, nil
 }

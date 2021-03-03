@@ -37,6 +37,7 @@ func BlockListen(ctx context.Context, r ServerAbstract) error {
 			errChan <- e
 		}
 	}()
+
 	defer close(errChan)
 
 	select {

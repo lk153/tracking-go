@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/google/wire"
 
+	"factory/exam/config"
 	"factory/exam/handler"
 	"factory/exam/repo"
 	"factory/exam/services"
@@ -10,6 +11,7 @@ import (
 
 //ServerDeps ...
 var ServerDeps = wire.NewSet(
+	config.GraphSet,
 	handler.GraphSet,
 	services.GraphSet,
 	repo.GraphSet,
@@ -19,5 +21,6 @@ var ServerDeps = wire.NewSet(
 var GraphSet = wire.NewSet(
 	ServerDeps,
 	HTTPProvider,
+	NewMetricServer,
 	NewServerManager,
 )
