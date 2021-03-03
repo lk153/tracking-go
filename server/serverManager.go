@@ -35,9 +35,13 @@ func (m *Manager) StartAll(parentCtx context.Context) error {
 	logger.InitLogger()
 	m.tracerFlush = tracer.InitTracer()
 	eg, ctx := errgroup.WithContext(parentCtx)
+
+	//Start http server on port 8080
 	eg.Go(func() error {
 		return shutdown.BlockListen(ctx, m.httpServer)
 	})
+
+	//Start metric server on port 9992
 	eg.Go(func() error {
 		return shutdown.BlockListen(ctx, m.metricServer)
 	})
