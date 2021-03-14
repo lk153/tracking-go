@@ -30,7 +30,10 @@ func (ps *ProductService) GetProducts(ctx context.Context, limit uint32) []*repo
 	g, ctx := errgroup.WithContext(ctx)
 	for i := uint32(0); i < limit; i++ {
 		g.Go(func() error {
-			prod := ps.productRepo.GetProduct(ctx)
+			prod, err := ps.productRepo.GetProduct(ctx)
+			if err != nil {
+				return err
+			}
 
 			select {
 			case prodChan <- prod:

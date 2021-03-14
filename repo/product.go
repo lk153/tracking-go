@@ -27,7 +27,7 @@ func ProductRepoProvider() *ProductRepoImp {
 }
 
 //GetProduct ...
-func (p *ProductRepoImp) GetProduct(ctx context.Context) *ProductModel {
+func (p *ProductRepoImp) GetProduct(ctx context.Context) (productDAO *ProductModel, err error) {
 	ctx, span := p.tracer.Start(ctx, "GetProduct")
 	defer span.End()
 
@@ -38,12 +38,12 @@ func (p *ProductRepoImp) GetProduct(ctx context.Context) *ProductModel {
 	})
 
 	span.AddEvent("faker.FakeData")
-	err := faker.FakeData(&product)
+	err = faker.FakeData(&product)
 	span.AddEvent("end faker.FakeData")
 
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	return product
+	return product, err
 }

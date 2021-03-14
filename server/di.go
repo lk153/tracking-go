@@ -5,7 +5,8 @@ import (
 
 	"factory/exam/config"
 	"factory/exam/handler"
-	"factory/exam/repo"
+	"factory/exam/infra"
+	repo_bind "factory/exam/repo/bind"
 	"factory/exam/services"
 )
 
@@ -14,7 +15,8 @@ var ServerDeps = wire.NewSet(
 	config.GraphSet,
 	handler.GraphSet,
 	services.GraphSet,
-	repo.GraphSet,
+	repo_bind.GraphSet,
+	infra.GraphSet,
 )
 
 //GraphSet ...

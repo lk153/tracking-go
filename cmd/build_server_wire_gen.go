@@ -9,7 +9,8 @@ import (
 	"context"
 	"factory/exam/config"
 	"factory/exam/handler"
-	"factory/exam/repo"
+	"factory/exam/infra"
+	"factory/exam/repo/mysql"
 	"factory/exam/server"
 	"factory/exam/services"
 )
@@ -17,8 +18,13 @@ import (
 // Injectors from buildServer.go:
 
 func buildServer(ctx context.Context) (*server.Manager, error) {
-	productRepoImp := repo.ProductRepoProvider()
-	productService := services.ProductProvider(productRepoImp)
+	configuration := infra.InitConfiguration()
+	connPool, err := infra.GetConnectionPool(configuration)
+	if err != nil {
+		return nil, err
+	}
+	productMySQLRepo := mysql.NewProductMySQLRepo(connPool)
+	productService := services.ProductProvider(productMySQLRepo)
 	productHandler := handler.ProductHandlerProvider(productService)
 	httpServer := server.HTTPProvider(productHandler)
 	metricPort := config.ProvideMetricPort()
