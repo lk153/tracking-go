@@ -28,5 +28,27 @@ services:
     image: adminer
     ports: 
       - 8282:8080
+
+  redis:
+    image: 'redis'
+    volumes:
+       - redis-data:/data
+    ports:
+      - "6379:6379"
+  locust-master:
+    image: 'locustio/locust'
+    volumes:
+      - ./locustfile.py:/mnt/locust/locustfile.py
+    command: -f /mnt/locust/locustfile.py --master -H http://master:8089
+    ports:
+      - "8089:8089"
+  locust-worker:
+    image: 'locustio/locust'
+    volumes:
+      - ./locustfile.py:/mnt/locust/locustfile.py
+    command: -f /mnt/locust/locustfile.py --worker --master-host locust-master
+
 volumes:
   db-data:
+  redis-data:
+  locust-data:

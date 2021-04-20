@@ -17,3 +17,12 @@ build:
 
 run: 
 	./$(DIST_DIR)
+
+	test:
+		go test -count=1 -coverprofile ./c.out ./... -v
+
+	test-cover:
+		go tool cover -func ./c.out
+
+	test-cover-html:
+		go tool cover -html=c.out -o cover.html
