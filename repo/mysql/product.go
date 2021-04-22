@@ -23,8 +23,8 @@ func NewProductMySQLRepo(
 }
 
 //GetProduct ...
-func (p *ProductMySQLRepo) GetProduct(ctx context.Context) (productDAO *repo.ProductModel, err error) {
-	if err = p.db.Conn.WithContext(ctx).Find(&productDAO).Limit(1).Error; err != nil {
+func (p *ProductMySQLRepo) GetProduct(ctx context.Context, limit int) (productDAO []*repo.ProductModel, err error) {
+	if err = p.db.Conn.WithContext(ctx).Limit(limit).Find(&productDAO).Error; err != nil {
 		return nil, err
 	}
 

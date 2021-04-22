@@ -18,5 +18,5 @@ func (p *ProductModel) TableName() string {
 
 //ProductRepoInterface ...
 type ProductRepoInterface interface {
-	GetProduct(context context.Context) (productDAO *ProductModel, err error)
+	GetProduct(context context.Context, limit int) (productDAO []*ProductModel, err error)
 }

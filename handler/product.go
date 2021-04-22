@@ -43,6 +43,6 @@ func (h *ProductHandler) Get(resp http.ResponseWriter, req *http.Request) {
 	}
 	span.AddEvent("end req.Parse.Limit")
 
-	products := h.services.GetProducts(ctx, uint32(limit))
+	products := h.services.GetProducts(ctx, int(limit))
 	responseSuccess(resp, req, products)
 }

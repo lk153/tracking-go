@@ -52,7 +52,7 @@ func GetConnectionPool(config Configuration) (*ConnPool, error) {
 //InitConfiguration ...
 func InitConfiguration() Configuration {
 	return Configuration{
-		addr:            envparser.GetString("MYSQL_ADDR", "root:123@tcp(localhost:3306)/users?charset=utf8&parseTime=True&loc=Local&multiStatements=true"),
+		addr:            envparser.GetString("MYSQL_ADDR", "root:123@tcp(localhost:3306)/tracking?charset=utf8&parseTime=True&loc=Local&multiStatements=true"),
 		maxOpenConns:    envparser.GetInt("POOL_SIZE", 32),
 		maxIdleConns:    envparser.GetInt("MAX_IDLE", 32),
 		connMaxLifetime: time.Duration(envparser.GetInt("MAX_LIFETIME", 30)) * time.Minute,

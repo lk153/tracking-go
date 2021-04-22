@@ -4,7 +4,7 @@ import (
 	"context"
 	"factory/exam/repo"
 
-	"golang.org/x/sync/errgroup"
+	entities_pb "github.com/lk153/proto-tracking-gen/go/entities"
 )
 
 var _ ProductServiceInterface = &ProductService{}
@@ -24,38 +24,27 @@ type ProductService struct {
 }
 
 //GetProducts ...
-func (ps *ProductService) GetProducts(ctx context.Context, limit uint32) []*repo.ProductModel {
-	var products []*repo.ProductModel
-	var prodChan = make(chan *repo.ProductModel)
-	g, ctx := errgroup.WithContext(ctx)
-	for i := uint32(0); i < limit; i++ {
-		g.Go(func() error {
-			prod, err := ps.productRepo.GetProduct(ctx)
-			if err != nil {
-				return err
-			}
-
-			select {
-			case prodChan <- prod:
-			case <-ctx.Done():
-				return ctx.Err()
-			}
-			return nil
-		})
-	}
-
-	go func() {
-		g.Wait()
-		close(prodChan)
-	}()
-
-	for prod := range prodChan {
-		products = append(products, prod)
-	}
-
-	if err := g.Wait(); err != nil {
+func (ps *ProductService) GetProducts(ctx context.Context, limit int) []*repo.ProductModel {
+	products, err := ps.productRepo.GetProduct(ctx, limit)
+	if err != nil {
 		return nil
 	}
 
 	return products
+}
+
+//Transform ...
+func (ps *ProductService) Transform(input []*repo.ProductModel) []*entities_pb.ProductInfo {
+	result := []*entities_pb.ProductInfo{}
+	for _, prod := range input {
+		item := &entities_pb.ProductInfo{
+			Id:    uint32(prod.ID),
+			Name:  prod.Name,
+			Price: prod.Price,
+			Type:  prod.Type,
+		}
+		result = append(result, item)
+	}
+
+	return result
 }

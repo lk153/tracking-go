@@ -26,7 +26,11 @@ func buildServer(ctx context.Context) (*server.Manager, error) {
 	productMySQLRepo := mysql.NewProductMySQLRepo(connPool)
 	productService := services.ProductProvider(productMySQLRepo)
 	productHandler := handler.ProductHandlerProvider(productService)
-	httpServer := server.HTTPProvider(productHandler)
+	productPBHandler := handler.NewProductPBHandler(productService)
+	httpServer, err := server.HTTPProvider(ctx, productHandler, productPBHandler)
+	if err != nil {
+		return nil, err
+	}
 	metricPort := config.ProvideMetricPort()
 	metricServer, err := server.NewMetricServer(metricPort)
 	if err != nil {

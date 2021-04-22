@@ -7,8 +7,12 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+
+	services_pb "github.com/lk153/proto-tracking-gen/go/services"
 
 	"factory/exam/handler"
+	"factory/exam/utils/gateway"
 	"factory/exam/utils/shutdown"
 )
 
@@ -19,13 +23,30 @@ type HTTPServer struct {
 	server *http.Server
 }
 
+//Builder ...
+type Builder struct {
+	*chi.Mux
+	name string
+}
+
 //HTTPProvider ...
 func HTTPProvider(
+	ctx context.Context,
 	productHandler *handler.ProductHandler,
-) *HTTPServer {
-	router := NewHTTPRouter()
+	prodPBHandler services_pb.ProductServiceServer,
+) (*HTTPServer, error) {
+	router := NewHTTPBuilder()
+
+	gateway := runtime.NewServeMux(gateway.DefaultGateMuxOpts()...)
+	err := services_pb.RegisterProductServiceHandlerServer(ctx, gateway, prodPBHandler)
+	if err != nil {
+		return nil, err
+	}
 
 	router.Get("/products", productHandler.Get)
+	router.Route("/", func(r chi.Router) {
+		r.Mount("/v1", gateway)
+	})
 
 	server := &http.Server{
 		Addr:           ":8080",
@@ -37,21 +58,21 @@ func HTTPProvider(
 
 	return &HTTPServer{
 		server: server,
-	}
+	}, nil
 }
 
-//NewHTTPRouter ...
-func NewHTTPRouter() *chi.Mux {
-	r := chi.NewRouter()
-	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+//NewHTTPBuilder ...
+func NewHTTPBuilder() *Builder {
+	mux := chi.NewRouter()
+	mux.Use(middleware.RequestID)
+	mux.Use(middleware.RealIP)
+	mux.Use(middleware.Logger)
+	mux.Use(middleware.Recoverer)
+	mux.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("welcome changes"))
 	})
 
-	return r
+	return &Builder{mux, "tracking"}
 }
 
 //Start ...
