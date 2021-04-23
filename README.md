@@ -1,5 +1,3 @@
-## GO GUIDE
-
 #### INSTALLATION
 
 1. Compile & build execute binary file
@@ -10,10 +8,14 @@ make default
 ```
 make run
 ```
-
+3. Install migrate command
+```
+curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.darwin-amd64.tar.gz | tar xvz
+mv migrate.darwin-amd64.tar.gz migrate
+```
 #### TIPS
 
-1. Downgrade Go modules
+Downgrade Go modules
 ```
 go get -u github.com/apache/thrift@v0.13.0
 go mod tidy
