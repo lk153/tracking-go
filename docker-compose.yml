@@ -60,6 +60,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
 
 volumes:
