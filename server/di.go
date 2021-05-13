@@ -7,6 +7,7 @@ import (
 	"factory/exam/handler"
 	"factory/exam/infra"
 	repo_bind "factory/exam/repo/bind"
+	kafka_server "factory/exam/server/kafka"
 	"factory/exam/services"
 )
 
@@ -25,4 +26,6 @@ var GraphSet = wire.NewSet(
 	HTTPProvider,
 	NewMetricServer,
 	NewServerManager,
+	kafka_server.NewKafkaConsumer,
+	kafka_server.NewKafkaProducer,
 )

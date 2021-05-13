@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/bxcodec/faker/v3 v3.6.0
+	github.com/confluentinc/confluent-kafka-go v1.7.0 // indirect
 	github.com/felixge/httpsnoop v1.0.2 // indirect
 	github.com/getsentry/sentry-go v0.10.0
 	github.com/go-chi/chi v1.5.3
@@ -31,6 +32,7 @@ require (
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	google.golang.org/api v0.40.0 // indirect
 	google.golang.org/protobuf v1.26.0
+	gopkg.in/confluentinc/confluent-kafka-go.v1 v1.7.0
 	gorm.io/driver/mysql v1.0.5
 	gorm.io/gorm v1.21.3
 )
