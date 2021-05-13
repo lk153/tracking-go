@@ -24,4 +24,9 @@ go clean -modcache
 go mod vendor
 ```
 
+#### Kafka Setup
+1. Edit configuration of kafka advertise listener to public interface (public IP of VM)
+```
+KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://[public IP]:9092
+```
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](CODE_OF_CONDUCT.md)
