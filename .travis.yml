@@ -1,6 +1,9 @@
 arch: amd64          # optional, this is default, routes to a full VM
 os: linux            # optional, this is default
 dist: focal
+language: go
+go:
+  - 1.16.2
 
 env:
   global:
@@ -10,8 +13,6 @@ env:
 before_install:
   - echo "Install Phase..."
 install:
-  - rm -rf /usr/local/go && tar -C /usr/local -xzf go1.16.4.linux-amd64.tar.gz
-  - export PATH=$PATH:/usr/local/go/bin
   - go version
 
 #Script
