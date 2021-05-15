@@ -1,5 +1,6 @@
-arch: amd64          # optional, this is default, routes to a full VM
-os: linux            # optional, this is default
+
+os: linux
+arch: arm64 
 dist: focal
 language: go
 go:
