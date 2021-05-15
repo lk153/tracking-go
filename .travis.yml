@@ -1,0 +1,34 @@
+arch: amd64          # optional, this is default, routes to a full VM
+os: linux            # optional, this is default
+dist: focal
+
+env:
+  global:
+    secure: a7C5GORF/IbrtkQc8yhk5URof75Ek3rR8o0VmS7ohl/6qyu2eOGgOQsY88XbbcKWeXXQ/jKEze1DM+GNn/qBoiPpmzVxvlBBRizAwKVTOLk6MTV7oqGj9nHEB1/R7jtd6I5BDFGX02PeB6+qun5rEDkrptXObVkXwLrxy2bxUtaQTj16MfMBQGQIYzjO9GpBHQwPhCEX8kLSu8RUZxRdKM+tv9ySEhCIV/jJAZdLyUgYNtO6gs2pMf7YJF7yU/qmrgDEPabKNg5CEQTCJZ08a4kQsSCluqhhHu5ukdp/PUw02cazaYNsiAUW6NQlPIvgXfI74MWLaGryxEJ3dkY/d5q9VP95tHcXX5Gvzw3+I1BR1dfOv6PP0eI7ZEdx0pu3p/pOkD+x57ekEOUAJJPjFoztdVyKm+6d/uTfDMCv4dbcuQ13iMX7+ht54/SM8reIIO6UfRPZvp7KuMmYUMhggzgI/xCn4peNJ4CswnAq9OgVKu4KtU98hPKGUqeUIURapwXFoT4fR+4eHqQoS95nV0o12+idUwLsGHEPZ1SZb6msAtlGDKQyDib/dzN5rup8rlw20ZT3/d2d5QASYkY0ZhgU/abnA1ok1vM1EmvZIXNIaSBdd53B5RmWzyGEGMoGw+2+DBv6iBBaHMGN3jcEt3sYXcllPi5MmzQgZvRyKVI=
+
+#Install
+before_install:
+  - echo "Install Phase..."
+install:
+  - rm -rf /usr/local/go && tar -C /usr/local -xzf go1.16.4.linux-amd64.tar.gz
+  - export PATH=$PATH:/usr/local/go/bin
+  - go version
+
+#Script
+before_script:
+  - echo "Script Phase..."
+script:
+
+after_success:
+  - echo "Script Phase Sucessfully!"
+after_failure:
+  - echo "Script Phase Failed!"
+
+#Deploy
+deploy:
+  skip_cleanup: true
+after_deploy:
+  - echo "Deploy Finished!"
+
+after_script:
+  - echo "Done!!!"
