@@ -12,31 +12,31 @@ env:
 
 #Install
 before_install:
-  - echo "Install Phase..."
   - uname -a
   - sudo apt-get update
-  - sudo apt-get install librdkafka-dev
+  - wget -qO - https://packages.confluent.io/deb/6.1/archive.key | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://packages.confluent.io/deb/6.1 stable main"
+  - sudo apt-get update && sudo apt-get install confluent-platform
+  - sudo apt-get install confluent-security
 install:
-  - go version
   - go mod tidy
   - go mod vendor
 
 #Script
 before_script:
-  - echo "Script Phase..."
   - make build
 script: make test-unit
 
 after_success:
-  - echo "Script Phase Sucessfully!"
+  - echo "built sucessfully!"
 after_failure:
-  - echo "Script Phase Failed!"
+  - echo "built failed!"
 
 #Deploy
 deploy:
   skip_cleanup: true
 after_deploy:
-  - echo "Deploy Finished!"
+  - echo "deploy finished!"
 
 after_script:
   - echo "Done!!!"
