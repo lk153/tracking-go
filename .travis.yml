@@ -13,6 +13,7 @@ env:
 #Install
 before_install:
   - echo "Install Phase..."
+  - uname -a
   - sudo apt-get update
   - sudo apt-get install librdkafka-dev
 install:
