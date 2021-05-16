@@ -2,3 +2,4 @@ vendor/
 out
 .git
 migrate
+c.out

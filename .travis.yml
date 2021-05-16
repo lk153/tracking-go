@@ -15,11 +15,14 @@ before_install:
   - echo "Install Phase..."
 install:
   - go version
+  - go mod tidy
+  - go mod vendor
 
 #Script
 before_script:
   - echo "Script Phase..."
-script:
+  - make build
+script: make test-unit
 
 after_success:
   - echo "Script Phase Sucessfully!"

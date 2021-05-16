@@ -15,14 +15,11 @@ di: $(WIRE)
 build: 
 	go build -tags=dynamic -o $(DIST_DIR) ./cmd
 
-run: 
-	./$(DIST_DIR)
+test-unit:
+	go test -count=1 -coverprofile ./c.out ./test -v
 
-	test:
-		go test -count=1 -coverprofile ./c.out ./... -v
+test-cover:
+	go tool cover -func ./c.out
 
-	test-cover:
-		go tool cover -func ./c.out
-
-	test-cover-html:
-		go tool cover -html=c.out -o cover.html
+test-cover-html:
+	go tool cover -html=c.out -o cover.html
