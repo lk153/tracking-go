@@ -63,7 +63,6 @@ services:
       - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
 
-
 volumes:
   db-data:
   redis-data:
