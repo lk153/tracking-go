@@ -25,13 +25,18 @@ env:
 before_install:
   - uname -a
   - sudo apt-get update
-  - git clone https://github.com/edenhill/librdkafka.git
-  - cd librdkafka
-  - ./configure
-  - make
-  - sudo make install
+  - wget -qO - https://packages.confluent.io/deb/6.1/archive.key | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://packages.confluent.io/deb/6.1 stable main"
+  - sudo apt-get update && sudo apt-get install librdkafka-dev
+  # - cd /home/travis/
+  # - git clone https://github.com/edenhill/librdkafka.git
+  # - cd librdkafka
+  # - ./configure
+  # - make
+  # - sudo make install
 
 install:
+  - cd /home/travis/gopath/src/github.com/lk153/tracking-go
   - go mod tidy
   - go mod vendor
 
