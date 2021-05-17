@@ -59,7 +59,6 @@ func (kp *KafkaProducer) Start() error {
 	configFile, topic := ccloud.ParseArgs()
 	conf := ccloud.ReadCCloudConfig(*configFile)
 
-	fmt.Print(conf["bootstrap.servers"])
 	// Create Producer instance
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
 		"bootstrap.servers": conf["bootstrap.servers"],
