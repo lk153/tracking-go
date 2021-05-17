@@ -10,13 +10,13 @@ $(WIRE):
 default: di build;
 
 di: $(WIRE)
-	$(WIRE) gen -tags=dynamic -output_file_prefix build_server_  ./cmd
+	$(WIRE) gen -tags dynamic -output_file_prefix build_server_  ./cmd
 
 build: 
-	go build -tags=dynamic -o $(DIST_DIR) ./cmd
+	go build -tags dynamic -o $(DIST_DIR) ./cmd
 
 test-unit:
-	go test -count=1 -coverprofile ./c.out ./test -v
+	go test -tags dynamic -parallel=1 -count=1 -coverprofile=./c.out -v ./...
 
 test-cover:
 	go tool cover -func ./c.out
