@@ -97,7 +97,7 @@ func (kp *KafkaProducer) Start() error {
 		recordValue, _ := json.Marshal(&data)
 		fmt.Printf("Preparing to produce record: %s\t%s\n", recordKey, recordValue)
 		p.Produce(&kafka.Message{
-			TopicPartition: kafka.TopicPartition{Topic: topic, Partition: kafka.PartitionAny},
+			TopicPartition: kafka.TopicPartition{Topic: topic, Partition: int32(kafka.PartitionAny)},
 			Key:            []byte(recordKey),
 			Value:          []byte(recordValue),
 		}, nil)

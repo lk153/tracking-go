@@ -14,6 +14,10 @@ make run
 curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.darwin-amd64.tar.gz | tar xvz
 mv migrate.darwin-amd64.tar.gz migrate
 ```
+4. Run migration
+```
+./migrate.sh up 1
+```
 #### TIPS
 
 Downgrade Go modules
