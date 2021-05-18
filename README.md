@@ -1,24 +1,28 @@
-## TRACKING SYSTEM
-#### INSTALLATION
+# TRACKING SYSTEM
+### INSTALLATION
 
-1. Compile & build execute binary file
+1. Set GOPRIVATE environment to download private package
+```
+export GOPRIVATE=github.com/tikivn
+```
+2. Compile & build execute binary file
 ```
 make default
 ```
-2. Up server
+3. Up server
 ```
 make run
 ```
-3. Install migrate command
+4. Install migrate command
 ```
 curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.darwin-amd64.tar.gz | tar xvz
 mv migrate.darwin-amd64.tar.gz migrate
 ```
-4. Run migration with version 1
+5. Run migration with version 1
 ```
 ./migrate.sh up 1
 ```
-#### TIPS
+### TIPS
 
 Downgrade Go modules
 ```
@@ -28,7 +32,7 @@ go clean -modcache
 go mod vendor
 ```
 
-#### Kafka Setup
+### Kafka Setup
 1. Edit configuration of kafka advertise listener to public interface (public IP of VM)
 ```
 KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://[public IP]:9092

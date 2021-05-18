@@ -28,7 +28,7 @@ func ProductRepoProvider() *ProductRepoImp {
 
 //GetProduct ...
 func (p *ProductRepoImp) GetProduct(ctx context.Context, limit int) (productDAO []*ProductModel, err error) {
-	ctx, span := p.tracer.Start(ctx, "GetProduct")
+	_, span := p.tracer.Start(ctx, "GetProduct")
 	defer span.End()
 
 	for i := 0; i < limit; i++ {
@@ -50,4 +50,26 @@ func (p *ProductRepoImp) GetProduct(ctx context.Context, limit int) (productDAO 
 	}
 
 	return productDAO, err
+}
+
+//GetProduct ...
+func (p *ProductRepoImp) Find(ctx context.Context, id int) (productDAO *ProductModel, err error) {
+	_, span := p.tracer.Start(ctx, "Find")
+	defer span.End()
+
+	product := &ProductModel{}
+	span.SetAttributes(label.KeyValue{
+		Key:   label.Key("name"),
+		Value: label.StringValue("Viet Nguyen"),
+	})
+
+	span.AddEvent("faker.FakeData")
+	err = faker.FakeData(&product)
+	span.AddEvent("end faker.FakeData")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return product, err
 }

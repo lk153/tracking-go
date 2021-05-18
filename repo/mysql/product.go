@@ -31,6 +31,14 @@ func (p *ProductMySQLRepo) GetProduct(ctx context.Context, limit int) (productDA
 	return productDAO, nil
 }
 
+func (p *ProductMySQLRepo) Find(ctx context.Context, id int) (productDAO *repo.ProductModel, err error) {
+	if err = p.db.Conn.WithContext(ctx).First(&productDAO, id).Error; err != nil {
+		return nil, err
+	}
+
+	return productDAO, nil
+}
+
 //GetProductBy ...
 func (p *ProductMySQLRepo) GetProductBy(ctx context.Context, query string) (productDAO *repo.ProductModel, err error) {
 	if err = p.db.Conn.WithContext(ctx).Find(&productDAO).Limit(1).Error; err != nil {

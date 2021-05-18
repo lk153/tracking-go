@@ -357,10 +357,10 @@ github.com/labstack/echo/v4 v4.1.11/go.mod h1:i541M3Fj6f76NZtHSj7TXnyM8n2gaodfvf
 github.com/labstack/gommon v0.3.0/go.mod h1:MULnywXg0yavhxWKc+lOruYdAhDwPK9wf0OL7NoOu+k=
 github.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20190605223551-bc2310a04743/go.mod h1:qklhhLq1aX+mtWk9cPHPzaBjWImj5ULL6C7HFJtXQMM=
 github.com/lightstep/lightstep-tracer-go v0.18.1/go.mod h1:jlF1pusYV4pidLvZ+XD0UBX0ZE6WURAspgAczcDHrL4=
-github.com/lk153/go-lib v1.0.1 h1:U0/LS0zi7eLUJe8k3mxFia2EXonOuAjijqrv4gMHTVs=
-github.com/lk153/go-lib v1.0.1/go.mod h1:qx54UrYj5wpjZQyNwUlzUTLcPnzHXEVsswz6akv9IL0=
-github.com/lk153/proto-tracking-gen v0.0.1 h1:+DBMyGcP5Ia5HAMR5ptjJQloifwFET1AjiXQ86EWWzs=
-github.com/lk153/proto-tracking-gen v0.0.1/go.mod h1:PEQNJEzpNzZLyspgOEacTSi21iph+b81vLn40sFJ6mo=
+github.com/lk153/go-lib v1.0.2 h1:shkL86dkerlJZMQ1ZWSnk3fpw0FDv04k+v4IEwp5QOQ=
+github.com/lk153/go-lib v1.0.2/go.mod h1:65p6SOsm7TrtrU5JzL5GuTTqwr1bcPd5gTZV0LCzNec=
+github.com/lk153/proto-tracking-gen v0.0.2 h1:Yms+EA+XLt2n3o2bn165g/7tZBONfysa7HK7jcvNiYU=
+github.com/lk153/proto-tracking-gen v0.0.2/go.mod h1:PEQNJEzpNzZLyspgOEacTSi21iph+b81vLn40sFJ6mo=
 github.com/lyft/protoc-gen-star v0.5.1/go.mod h1:9toiA3cC7z5uVbODF7kEQ91Xn7XNFkVUl+SrEe+ZORU=
 github.com/lyft/protoc-gen-validate v0.0.13/go.mod h1:XbGvPuh87YZc5TdIa2/I4pLk0QoUACkjt2znoq26NVQ=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=

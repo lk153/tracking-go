@@ -42,3 +42,18 @@ func (p *ProductPBHandler) Get(ctx context.Context,
 		Data: data,
 	}, nil
 }
+
+//GetSingle ...
+func (p *ProductPBHandler) GetSingle(ctx context.Context,
+	req *services_pb.SingleProductRequest) (*services_pb.SingleProductResponse, error) {
+	ctx, span := p.tracer.Start(ctx, "GetSingle")
+	defer span.End()
+
+	ID := req.GetId()
+	product := p.productService.GetProduct(ctx, int(ID))
+	data := p.productService.TransformSingle(product)
+
+	return &services_pb.SingleProductResponse{
+		Data: data,
+	}, nil
+}

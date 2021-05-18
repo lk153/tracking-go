@@ -33,6 +33,16 @@ func (ps *ProductService) GetProducts(ctx context.Context, limit int) []*repo.Pr
 	return products
 }
 
+//GetProduct ...
+func (ps *ProductService) GetProduct(ctx context.Context, id int) *repo.ProductModel {
+	product, err := ps.productRepo.Find(ctx, id)
+	if err != nil {
+		return nil
+	}
+
+	return product
+}
+
 //Transform ...
 func (ps *ProductService) Transform(input []*repo.ProductModel) []*entities_pb.ProductInfo {
 	result := []*entities_pb.ProductInfo{}
@@ -47,4 +57,20 @@ func (ps *ProductService) Transform(input []*repo.ProductModel) []*entities_pb.P
 	}
 
 	return result
+}
+
+//Transform ...
+func (ps *ProductService) TransformSingle(prod *repo.ProductModel) *entities_pb.ProductInfo {
+	if prod == nil {
+		return nil
+	}
+
+	item := &entities_pb.ProductInfo{
+		Id:    uint32(prod.ID),
+		Name:  prod.Name,
+		Price: prod.Price,
+		Type:  prod.Type,
+	}
+
+	return item
 }
