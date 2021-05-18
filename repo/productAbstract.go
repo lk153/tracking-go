@@ -1,9 +1,14 @@
 package repo
 
-import "context"
+import (
+	"context"
+
+	entities_pb "github.com/lk153/proto-tracking-gen/go/entities"
+)
 
 //ProductRepoInterface ...
 type ProductRepoInterface interface {
 	GetProduct(context context.Context, limit int) (productDAO []*ProductModel, err error)
 	Find(context context.Context, id int) (productDAO *ProductModel, err error)
+	Create(context context.Context, id *entities_pb.ProductInfo) (productDAO *ProductModel, err error)
 }

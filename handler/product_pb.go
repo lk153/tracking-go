@@ -57,3 +57,17 @@ func (p *ProductPBHandler) GetSingle(ctx context.Context,
 		Data: data,
 	}, nil
 }
+
+func (p *ProductPBHandler) Create(ctx context.Context,
+	req *services_pb.ProductCreateRequest) (*services_pb.ProductCreateResponse, error) {
+	ctx, span := p.tracer.Start(ctx, "Create")
+	defer span.End()
+
+	data := req.GetData()
+	product := p.productService.CreateProduct(ctx, data)
+	data = p.productService.TransformSingle(product)
+
+	return &services_pb.ProductCreateResponse{
+		Data: data,
+	}, nil
+}

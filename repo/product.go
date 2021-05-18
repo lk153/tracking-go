@@ -9,6 +9,8 @@ import (
 	"go.opentelemetry.io/otel/trace"
 
 	"github.com/bxcodec/faker/v3"
+
+	entities_pb "github.com/lk153/proto-tracking-gen/go/entities"
 )
 
 var _ ProductRepoInterface = &ProductRepoImp{}
@@ -50,6 +52,11 @@ func (p *ProductRepoImp) GetProduct(ctx context.Context, limit int) (productDAO 
 	}
 
 	return productDAO, err
+}
+
+//Create ...
+func (p *ProductRepoImp) Create(context context.Context, id *entities_pb.ProductInfo) (productDAO *ProductModel, err error) {
+	return nil, nil
 }
 
 //GetProduct ...

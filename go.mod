@@ -12,7 +12,7 @@ require (
 	github.com/google/wire v0.5.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.3.0
 	github.com/lk153/go-lib v1.0.2
-	github.com/lk153/proto-tracking-gen v0.0.2
+	github.com/lk153/proto-tracking-gen v0.0.3
 	github.com/stretchr/testify v1.7.0
 	go.opentelemetry.io/contrib v0.20.0 // indirect
 	go.opentelemetry.io/otel v0.17.0

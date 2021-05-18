@@ -43,6 +43,15 @@ func (ps *ProductService) GetProduct(ctx context.Context, id int) *repo.ProductM
 	return product
 }
 
+func (ps *ProductService) CreateProduct(ctx context.Context, data *entities_pb.ProductInfo) *repo.ProductModel {
+	product, err := ps.productRepo.Create(ctx, data)
+	if err != nil {
+		return nil
+	}
+
+	return product
+}
+
 //Transform ...
 func (ps *ProductService) Transform(input []*repo.ProductModel) []*entities_pb.ProductInfo {
 	result := []*entities_pb.ProductInfo{}
