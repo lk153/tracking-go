@@ -1,5 +1,6 @@
 # TRACKING SYSTEM
-### INSTALLATION
+[![](https://travis-ci.com/lk153/tracking-go.svg?branch=main)](https://travis-ci.com/github/lk153/tracking-go/builds)
+### Installation
 
 1. Set GOPRIVATE environment to download private package
 ```
@@ -22,7 +23,7 @@ mv migrate.darwin-amd64.tar.gz migrate
 ```
 ./migrate.sh up 1
 ```
-### TIPS
+### Tips
 
 Downgrade Go modules
 ```
@@ -37,4 +38,9 @@ go mod vendor
 ```
 KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://[public IP]:9092
 ```
+
+### Locust 
+* How to write locustfile
+[Documentation](https://docs.locust.io/en/latest/writing-a-locustfile.html)
+
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](CODE_OF_CONDUCT.md)
