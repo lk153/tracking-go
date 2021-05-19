@@ -90,25 +90,35 @@ func (kp *KafkaProducer) Start() error {
 		}
 	}()
 
-	for n := 0; n < 10; n++ {
-		recordKey := "alice"
-		data := &ProduceRecordValue{
-			Count: n}
-		recordValue, _ := json.Marshal(&data)
-		fmt.Printf("Preparing to produce record: %s\t%s\n", recordKey, recordValue)
-		p.Produce(&kafka.Message{
-			TopicPartition: kafka.TopicPartition{Topic: topic, Partition: int32(kafka.PartitionAny)},
-			Key:            []byte(recordKey),
-			Value:          []byte(recordValue),
-		}, nil)
+	deliveryChan := make(chan kafka.Event)
+
+	recordKey := "tracking"
+	data := &ProduceRecordValue{
+		Count: 0}
+	recordValue, _ := json.Marshal(&data)
+	fmt.Printf("Preparing to produce record: %s\t%s\n", recordKey, recordValue)
+	err = p.Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{Topic: topic, Partition: int32(kafka.PartitionAny)},
+		Key:            []byte(recordKey),
+		Value:          []byte(recordValue),
+	}, deliveryChan)
+	if err != nil {
+		fmt.Printf("Produce message has error: key %v, val %v", recordKey, recordValue)
+		return err
 	}
 
 	// Wait for all messages to be delivered
-	p.Flush(15 * 1000)
+	kafkaEvent := <-deliveryChan
+	msg := kafkaEvent.(*kafka.Message)
+	if msg.TopicPartition.Error != nil {
+		fmt.Printf("Delivery failed: %v\n", msg.TopicPartition.Error)
+		return msg.TopicPartition.Error
+	} else {
+		fmt.Printf("Delivered message to topic %s [%d] at offset %v\n",
+			*msg.TopicPartition.Topic, msg.TopicPartition.Partition, msg.TopicPartition.Offset)
+	}
 
-	fmt.Printf("10 messages were produced to topic %s!", *topic)
-
-	p.Close()
+	close(deliveryChan)
 
 	return nil
 }

@@ -9,6 +9,8 @@ import (
 	"go.opentelemetry.io/otel/trace"
 
 	"github.com/bxcodec/faker/v3"
+
+	entities_pb "github.com/lk153/proto-tracking-gen/go/entities"
 )
 
 var _ ProductRepoInterface = &ProductRepoImp{}
@@ -28,7 +30,7 @@ func ProductRepoProvider() *ProductRepoImp {
 
 //GetProduct ...
 func (p *ProductRepoImp) GetProduct(ctx context.Context, limit int) (productDAO []*ProductModel, err error) {
-	ctx, span := p.tracer.Start(ctx, "GetProduct")
+	_, span := p.tracer.Start(ctx, "GetProduct")
 	defer span.End()
 
 	for i := 0; i < limit; i++ {
@@ -50,4 +52,31 @@ func (p *ProductRepoImp) GetProduct(ctx context.Context, limit int) (productDAO 
 	}
 
 	return productDAO, err
+}
+
+//Create ...
+func (p *ProductRepoImp) Create(context context.Context, id *entities_pb.ProductInfo) (productDAO *ProductModel, err error) {
+	return nil, nil
+}
+
+//GetProduct ...
+func (p *ProductRepoImp) Find(ctx context.Context, id int) (productDAO *ProductModel, err error) {
+	_, span := p.tracer.Start(ctx, "Find")
+	defer span.End()
+
+	product := &ProductModel{}
+	span.SetAttributes(label.KeyValue{
+		Key:   label.Key("name"),
+		Value: label.StringValue("Viet Nguyen"),
+	})
+
+	span.AddEvent("faker.FakeData")
+	err = faker.FakeData(&product)
+	span.AddEvent("end faker.FakeData")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return product, err
 }

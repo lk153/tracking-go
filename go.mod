@@ -4,7 +4,6 @@ go 1.15
 
 require (
 	github.com/bxcodec/faker/v3 v3.6.0
-	github.com/confluentinc/confluent-kafka-go v1.7.0 // indirect
 	github.com/felixge/httpsnoop v1.0.2 // indirect
 	github.com/getsentry/sentry-go v0.10.0
 	github.com/go-chi/chi v1.5.4
@@ -12,8 +11,8 @@ require (
 	github.com/go-logr/zapr v0.4.0
 	github.com/google/wire v0.5.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.3.0
-	github.com/lk153/go-lib v1.0.1
-	github.com/lk153/proto-tracking-gen v0.0.1
+	github.com/lk153/go-lib v1.0.2
+	github.com/lk153/proto-tracking-gen v0.0.3
 	github.com/stretchr/testify v1.7.0
 	go.opentelemetry.io/contrib v0.20.0 // indirect
 	go.opentelemetry.io/otel v0.17.0
