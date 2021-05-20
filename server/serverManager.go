@@ -40,7 +40,7 @@ func NewServerManager(
 //StartAll ...
 func (m *Manager) StartAll(parentCtx context.Context) error {
 	logger.InitLogger()
-	m.tracerFlush = tracer.InitTracer()
+	m.tracerFlush = tracer.InitTracer("tracking.sys.go")
 	eg, ctx := errgroup.WithContext(parentCtx)
 
 	//Start http server on port 8080

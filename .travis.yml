@@ -1,62 +1,41 @@
 os: linux
-arch: arm64 
+arch: arm64
 dist: focal
 language: go
 go:
-  - 1.16.2
-
-# blocklist
-branches:
-  except:
-  - legacy
-  - experimental
-
-# safelist
+- 1.16.2
 branches:
   only:
   - main
-
 env:
   global:
     secure: a7C5GORF/IbrtkQc8yhk5URof75Ek3rR8o0VmS7ohl/6qyu2eOGgOQsY88XbbcKWeXXQ/jKEze1DM+GNn/qBoiPpmzVxvlBBRizAwKVTOLk6MTV7oqGj9nHEB1/R7jtd6I5BDFGX02PeB6+qun5rEDkrptXObVkXwLrxy2bxUtaQTj16MfMBQGQIYzjO9GpBHQwPhCEX8kLSu8RUZxRdKM+tv9ySEhCIV/jJAZdLyUgYNtO6gs2pMf7YJF7yU/qmrgDEPabKNg5CEQTCJZ08a4kQsSCluqhhHu5ukdp/PUw02cazaYNsiAUW6NQlPIvgXfI74MWLaGryxEJ3dkY/d5q9VP95tHcXX5Gvzw3+I1BR1dfOv6PP0eI7ZEdx0pu3p/pOkD+x57ekEOUAJJPjFoztdVyKm+6d/uTfDMCv4dbcuQ13iMX7+ht54/SM8reIIO6UfRPZvp7KuMmYUMhggzgI/xCn4peNJ4CswnAq9OgVKu4KtU98hPKGUqeUIURapwXFoT4fR+4eHqQoS95nV0o12+idUwLsGHEPZ1SZb6msAtlGDKQyDib/dzN5rup8rlw20ZT3/d2d5QASYkY0ZhgU/abnA1ok1vM1EmvZIXNIaSBdd53B5RmWzyGEGMoGw+2+DBv6iBBaHMGN3jcEt3sYXcllPi5MmzQgZvRyKVI=
-
-#Install
 before_install:
-  - uname -a
-  - sudo apt-get update
-  # - wget -qO - https://packages.confluent.io/deb/6.1/archive.key | sudo apt-key add -
-  # - sudo add-apt-repository "deb [arch=amd64] https://packages.confluent.io/deb/6.1 stable main"
-  # - sudo apt-get update && sudo apt-get install librdkafka-dev
-  - cd /home/travis/
-  - git clone https://github.com/edenhill/librdkafka.git
-  - cd librdkafka
-  - ./configure
-  - make
-  - sudo make install
-
+- uname -a
+- sudo apt-get update
+- cd /home/travis/
+- git clone https://github.com/edenhill/librdkafka.git
+- cd librdkafka
+- "./configure"
+- make
+- sudo make install
 install:
-  - cd /home/travis/gopath/src/github.com/lk153/tracking-go
-  - go mod tidy
-  - go mod vendor
-
-#Script
+- cd /home/travis/gopath/src/github.com/lk153/tracking-go
+- go mod tidy
+- go mod vendor
 before_script:
-  - make build
-
+- make build
 script: make test-unit
-
 after_success:
-  - echo "built sucessfully!"
-
+- echo "built sucessfully!"
 after_failure:
-  - echo "built failed!"
-
-#Deploy
+- echo "built failed!"
 deploy:
   skip_cleanup: true
-
 after_deploy:
-  - echo "deploy finished!"
-
+- echo "deploy finished!"
 after_script:
-  - echo "Done!!!"
+- echo "Done!!!"
+notifications:
+  slack:
+    secure: OXvTctXqU+yuKZkJdGEJmSA6mDxvzfq6SLL2dO2yekH3k9Zp4tJGM8OAMR/toNiC8A1I7PM9Y6uiVS7WERARdbyS6lmZ16ewDQdaSMTXeCwUpVxbo7+fBNHiYKhlWzsBOUvWWacnLVwFlc1C26psvb1HtXqhYT3ZzRxEKYjevpEGKnIdYoKUb6RNCco/p0Y/M4yttHq4OOVhaCJcp7wdF7L1DrhbeD01I1vEDNUq755Fulqx3OH34B34A/6fCMV77FsCZLOdXL43x8KQ2RzJygzTe/fdaj9phpxTz5TWwI1iNcy/INLgFhawN6hLo8z6BKjXM7JYATgJKdgm1aA+lVXl/GY/e4CIm4gSTtYd9c1zDPCyrre3djxzep3z9gvNgOC2wj6yYMZgW3Diq/32dkE5DOwMjKHow2bC4uF4z+RD+i6VO3ulKZtCxoHi177B/kVaSGunq0NGi3xBkAEwdlXU4UrVmIBuajFuzY4f4c5n4zczgtCJqm9/3sF7uvHP22sSiHW8Fs30qp99RpbRkim1r//Gb3UbLYXncm42frZ2I8eCnwfgFH5gQE3Mr+B7eSdx2xRLCr/7fqm+Q8cjQIzkTEcIHvJsqyrGXHmw7ZTdOpF7Q+lMCjOuKLTL9FZuKQpnpXOQIPVvhz9qfLmAQYBzKeTI/MnJcWbOOG9q/sU=

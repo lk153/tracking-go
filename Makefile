@@ -23,3 +23,9 @@ test-cover:
 
 test-cover-html:
 	go tool cover -html=c.out -o cover.html
+
+up-depend:
+	go get -u github.com/lk153/proto-tracking-gen
+	go get -u github.com/lk153/go-lib
+	go mod tidy
+	go mod vendor
