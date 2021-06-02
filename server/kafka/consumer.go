@@ -36,6 +36,14 @@ import (
 	"factory/exam/server/kafka/ccloud"
 )
 
+const (
+	BOOTSTRAP_SERVERS = "bootstrap.servers"
+	SASL_MECHANISMS   = "sasl.mechanisms"
+	SECURITY_PROTOCOL = "security.protocol"
+	SASL_USERNAME     = "sasl.username"
+	SASL_PASSWORD     = "sasl.password"
+)
+
 // ConsumeRecordValue represents the struct of the value in a Kafka message
 type ConsumeRecordValue ccloud.RecordValue
 
@@ -60,14 +68,14 @@ func (kc *KafkaConsumer) Start() error {
 	configFile, topic := ccloud.ParseArgs()
 	conf := ccloud.ReadCCloudConfig(*configFile)
 
-	fmt.Print(conf["bootstrap.servers"])
+	fmt.Print(conf[BOOTSTRAP_SERVERS])
 	// Create Consumer instance
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": conf["bootstrap.servers"],
-		"sasl.mechanisms":   conf["sasl.mechanisms"],
-		"security.protocol": conf["security.protocol"],
-		"sasl.username":     conf["sasl.username"],
-		"sasl.password":     conf["sasl.password"],
+		BOOTSTRAP_SERVERS:   conf[BOOTSTRAP_SERVERS],
+		SASL_MECHANISMS:     conf[SASL_MECHANISMS],
+		SECURITY_PROTOCOL:   conf[SECURITY_PROTOCOL],
+		SASL_USERNAME:       conf[SASL_USERNAME],
+		SASL_PASSWORD:       conf[SASL_PASSWORD],
 		"group.id":          "go_example_group_1",
 		"auto.offset.reset": "earliest",
 	})
