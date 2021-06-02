@@ -18,7 +18,9 @@ import (
 func InitTracer(serviceName string) func() {
 	endpoint := os.Getenv("JAEGER_ENDPOINT")
 	if endpoint == "" {
-		return func() {}
+		return func() {
+			//Return shutdown handler function
+		}
 	}
 
 	var endpointOpt jaeger.EndpointOption
