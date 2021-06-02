@@ -1,5 +1,7 @@
 # TRACKING SYSTEM
 [![](https://travis-ci.com/lk153/tracking-go.svg?branch=main)](https://travis-ci.com/github/lk153/tracking-go/builds)
+
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=lk153_tracking-go)](https://sonarcloud.io/dashboard?id=lk153_tracking-go)
 ### Installation
 
 1. Set GOPRIVATE environment to download private package
