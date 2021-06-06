@@ -10,6 +10,7 @@ import (
 	"factory/exam/config"
 	"factory/exam/handler"
 	"factory/exam/infra"
+	"factory/exam/repo/cache"
 	"factory/exam/repo/mysql"
 	"factory/exam/server"
 	"factory/exam/server/kafka"
@@ -25,7 +26,8 @@ func buildServer(ctx context.Context) (*server.Manager, error) {
 		return nil, err
 	}
 	productMySQLRepo := mysql.NewProductMySQLRepo(connPool)
-	productService := services.ProductProvider(productMySQLRepo)
+	redisCache := cache.NewRedisCacheRepo()
+	productService := services.ProductProvider(productMySQLRepo, redisCache)
 	productHandler := handler.ProductHandlerProvider(productService)
 	productPBHandler := handler.NewProductPBHandler(productService)
 	httpServer, err := server.HTTPProvider(ctx, productHandler, productPBHandler)
