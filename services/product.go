@@ -73,10 +73,9 @@ func (ps *ProductService) CreateProduct(ctx context.Context, data *entities_pb.P
 		return nil
 	}
 
-	if product.ID != 0 {
-		ps.cacheRepo.Set(ctx, strconv.Itoa(int(product.ID)), product)
-
-	}
+	// if product.ID != 0 {
+	// 	ps.cacheRepo.Set(ctx, strconv.Itoa(int(product.ID)), product)
+	// }
 
 	return product
 }

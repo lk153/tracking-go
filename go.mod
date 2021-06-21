@@ -12,7 +12,7 @@ require (
 	github.com/go-redis/redis/v8 v8.8.3
 	github.com/google/wire v0.5.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.3.0
-	github.com/lk153/go-lib v1.0.3
+	github.com/lk153/go-lib v1.0.25
 	github.com/lk153/proto-tracking-gen v0.0.3
 	github.com/stretchr/testify v1.7.0
 	go.opentelemetry.io/otel v0.20.0
@@ -24,7 +24,6 @@ require (
 	golang.org/x/mod v0.4.0 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	google.golang.org/protobuf v1.26.0
-	gopkg.in/confluentinc/confluent-kafka-go.v1 v1.7.0
 	gorm.io/driver/mysql v1.0.5
 	gorm.io/gorm v1.21.3
 )

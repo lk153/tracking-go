@@ -7,7 +7,6 @@ import (
 	"github.com/getsentry/sentry-go"
 	"golang.org/x/sync/errgroup"
 
-	"factory/exam/server/kafka"
 	"factory/exam/utils/logger"
 	"factory/exam/utils/shutdown"
 	"factory/exam/utils/tracer"
@@ -17,8 +16,7 @@ import (
 type Manager struct {
 	httpServer    *HTTPServer
 	metricServer  *MetricServer
-	kafkaConsumer *kafka.KafkaConsumer
-	kafkaProducer *kafka.KafkaProducer
+	kafkaConsumer *KafkaConsumer
 	tracerFlush   func()
 }
 
@@ -26,14 +24,12 @@ type Manager struct {
 func NewServerManager(
 	httpServer *HTTPServer,
 	metricServer *MetricServer,
-	kafkaConsumer *kafka.KafkaConsumer,
-	kafkaProducer *kafka.KafkaProducer,
+	kafkaConsumer *KafkaConsumer,
 ) *Manager {
 	return &Manager{
 		httpServer:    httpServer,
 		metricServer:  metricServer,
 		kafkaConsumer: kafkaConsumer,
-		kafkaProducer: kafkaProducer,
 	}
 }
 
@@ -56,11 +52,6 @@ func (m *Manager) StartAll(parentCtx context.Context) error {
 	//Start metric server on port 9992
 	eg.Go(func() error {
 		return shutdown.BlockListen(ctx, m.kafkaConsumer)
-	})
-
-	//Start metric server on port 9992
-	eg.Go(func() error {
-		return shutdown.BlockListen(ctx, m.kafkaProducer)
 	})
 
 	return eg.Wait()

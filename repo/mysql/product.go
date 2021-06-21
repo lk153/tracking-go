@@ -2,25 +2,40 @@ package mysql
 
 import (
 	"context"
+	"encoding/json"
 	"factory/exam/infra"
 	"factory/exam/repo"
+	"fmt"
 
+	kafkaLib "github.com/lk153/go-lib/kafka"
 	entities_pb "github.com/lk153/proto-tracking-gen/go/entities"
 )
 
 var _ repo.ProductRepoInterface = &ProductMySQLRepo{}
+var configPath = "librdkafka.config"
+var topic = "testing"
 
 //ProductMySQLRepo ...
 type ProductMySQLRepo struct {
-	db *infra.ConnPool
+	db       *infra.ConnPool
+	producer *kafkaLib.KafkaProducer
 }
 
 //NewProductMySQLRepo ...
 func NewProductMySQLRepo(
 	db *infra.ConnPool,
 ) *ProductMySQLRepo {
+	producerLib := &kafkaLib.KafkaProducer{
+		ConfigFile: &configPath,
+	}
+	producerLib.InitConfig()
+	err := producerLib.CreateProducerInstance()
+	if err != nil {
+		fmt.Println("create producer has error")
+	}
 	return &ProductMySQLRepo{
-		db: db,
+		db:       db,
+		producer: producerLib,
 	}
 }
 
@@ -63,6 +78,12 @@ func (p *ProductMySQLRepo) Create(ctx context.Context, data *entities_pb.Product
 	if result.Error != nil {
 		return nil, result.Error
 	}
+
+	raw, err := json.Marshal(productDAO)
+	if err != nil {
+		fmt.Println("parse data has error")
+	}
+	p.producer.ProduceMessage(&topic, string(raw))
 
 	return productDAO, nil
 }
