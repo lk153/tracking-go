@@ -6,15 +6,15 @@
 ```
 sum by (direction) (increase(system_network_io[1m])) / 1000000
 ```
-2. System memory usage *(unit: megabytes)*
+2. System Memory Usage *(unit: megabytes)*
 ```
 avg_over_time(system_memory_usage[1m]) / 1000000
 ```
-3. API Latency - TP95 *(unit: rpm)*
+3. API Latency - TP95 *(unit: milliseconds)*
 ```
 histogram_quantile(0.95, rate(http_server_requests_duration_seconds_bucket[1m])) * 1000
 ```
-4. API Throughput *(unit: milliseconds)*
+4. API Throughput *(unit: rpm)*
 ```
 increase(http_server_requests_number[1m])
 ```
@@ -27,6 +27,10 @@ FROM products
 WHERE
   $__timeFilter(creation_time)
 ORDER BY creation_time
+```
+6. Number Goroutine
+```
+runtime_go_goroutines
 ```
 
 

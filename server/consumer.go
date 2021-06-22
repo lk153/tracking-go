@@ -54,7 +54,7 @@ func (kc *KafkaConsumer) Start() error {
 			productModel := &repo.ProductModel{}
 			err := json.Unmarshal([]byte(item), productModel)
 			if err != nil {
-				fmt.Printf("Unmarshal consumed product has error: %v", err)
+				fmt.Printf("Unmarshal consumed product has error: %v\n", err)
 			}
 
 			kc.cache.GetProduct(context.Background(), int(productModel.ID))

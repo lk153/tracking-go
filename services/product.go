@@ -42,8 +42,6 @@ func (ps *ProductService) GetProducts(ctx context.Context, limit int) []*repo.Pr
 //GetProduct ...
 func (ps *ProductService) GetProduct(ctx context.Context, id int) *repo.ProductModel {
 	product, err := ps.cacheRepo.Get(ctx, strconv.Itoa(id))
-	fmt.Println("GetCache")
-	fmt.Println(product)
 
 	if err != nil {
 		fmt.Println(err)
@@ -51,6 +49,7 @@ func (ps *ProductService) GetProduct(ctx context.Context, id int) *repo.ProductM
 	}
 
 	if product != nil {
+		fmt.Printf("GetCache: %v\n", product)
 		return product
 	}
 

@@ -1,10 +1,9 @@
 from locust import HttpUser, task, between
-import random
 import json
+import secrets
 
 class QuickstartUser(HttpUser):
     wait_time = between(1, 2.5)
-    random.seed()
 
     @task(1)
     def fetch_product_pb(self):
@@ -27,6 +26,6 @@ class QuickstartUser(HttpUser):
     def create_product(self):   
         headers = {'Content-Type': 'application/json','Accept-Encoding':'gzip'}
         self.client.post("/v1/product", data=json.dumps(
-            {"data": {"id": random.randint(1,100), "name": "Samsung 203", "price": 3000, "type": "simple", "status": 1}}), 
+            {"data": {"id": secrets.randbelow(1000), "name": "Samsung", "price": secrets.randbelow(30000), "type": "simple", "status": secrets.randbelow(2)}}), 
             headers=headers, 
             name = "Create a new product")
