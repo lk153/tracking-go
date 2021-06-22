@@ -13,7 +13,6 @@ import (
 	"factory/exam/repo/cache"
 	"factory/exam/repo/mysql"
 	"factory/exam/server"
-	"factory/exam/server/kafka"
 	"factory/exam/services"
 )
 
@@ -39,14 +38,10 @@ func buildServer(ctx context.Context) (*server.Manager, error) {
 	if err != nil {
 		return nil, err
 	}
-	kafkaConsumer, err := kafka.NewKafkaConsumer()
+	kafkaConsumer, err := server.NewKafkaConsumer(productService, productMySQLRepo)
 	if err != nil {
 		return nil, err
 	}
-	kafkaProducer, err := kafka.NewKafkaProducer()
-	if err != nil {
-		return nil, err
-	}
-	manager := server.NewServerManager(httpServer, metricServer, kafkaConsumer, kafkaProducer)
+	manager := server.NewServerManager(httpServer, metricServer, kafkaConsumer)
 	return manager, nil
 }

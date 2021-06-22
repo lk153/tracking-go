@@ -36,13 +36,17 @@ func HTTPProvider(
 		return nil, err
 	}
 
-	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome changes"))
-	})
+	userMetaMiddleware := httplib.NewRequestExtractor(
+		httplib.NewRequestExtractorConf(httplib.CtxUserMetadata, httplib.ExtractUserMetaFromRequest),
+	)
 
-	router.Get("/products", productHandler.Get)
 	router.Route("/", func(r chi.Router) {
+		r.Use(userMetaMiddleware)
 		r.Mount("/v1", gateway)
+		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("welcome changes"))
+		})
+		r.Get("/products", productHandler.Get)
 	})
 
 	server := &http.Server{

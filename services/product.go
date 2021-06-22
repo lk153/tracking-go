@@ -42,8 +42,6 @@ func (ps *ProductService) GetProducts(ctx context.Context, limit int) []*repo.Pr
 //GetProduct ...
 func (ps *ProductService) GetProduct(ctx context.Context, id int) *repo.ProductModel {
 	product, err := ps.cacheRepo.Get(ctx, strconv.Itoa(id))
-	fmt.Println("GetCache")
-	fmt.Println(product)
 
 	if err != nil {
 		fmt.Println(err)
@@ -51,6 +49,7 @@ func (ps *ProductService) GetProduct(ctx context.Context, id int) *repo.ProductM
 	}
 
 	if product != nil {
+		fmt.Printf("GetCache: %v\n", product)
 		return product
 	}
 
@@ -73,10 +72,9 @@ func (ps *ProductService) CreateProduct(ctx context.Context, data *entities_pb.P
 		return nil
 	}
 
-	if product.ID != 0 {
-		ps.cacheRepo.Set(ctx, strconv.Itoa(int(product.ID)), product)
-
-	}
+	// if product.ID != 0 {
+	// 	ps.cacheRepo.Set(ctx, strconv.Itoa(int(product.ID)), product)
+	// }
 
 	return product
 }
