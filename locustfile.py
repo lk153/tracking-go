@@ -26,6 +26,6 @@ class QuickstartUser(HttpUser):
     def create_product(self):   
         headers = {'Content-Type': 'application/json','Accept-Encoding':'gzip'}
         self.client.post("/v1/product", data=json.dumps(
-            {"data": {"id": secrets.randbelow(1000), "name": "Samsung", "price": secrets.randbelow(30000), "type": "simple", "status": secrets.randbelow(2)}}), 
+            {"data": {"id": secrets.randbelow(200), "name": "Samsung", "price": secrets.randbelow(30000), "type": "simple", "status": secrets.randbelow(2)}}), 
             headers=headers, 
             name = "Create a new product")

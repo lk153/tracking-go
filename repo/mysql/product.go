@@ -8,12 +8,13 @@ import (
 	"fmt"
 
 	kafkaLib "github.com/lk153/go-lib/kafka"
+	"github.com/lk153/go-lib/kafka/ccloud"
 	entities_pb "github.com/lk153/proto-tracking-gen/go/entities"
 )
 
 var _ repo.ProductRepoInterface = &ProductMySQLRepo{}
-var configPath = "librdkafka.config"
-var topic = "testing"
+var configPath *string
+var topic *string
 
 //ProductMySQLRepo ...
 type ProductMySQLRepo struct {
@@ -25,8 +26,9 @@ type ProductMySQLRepo struct {
 func NewProductMySQLRepo(
 	db *infra.ConnPool,
 ) *ProductMySQLRepo {
+	configPath, topic = ccloud.ParseArgs()
 	producerLib := &kafkaLib.KafkaProducer{
-		ConfigFile: &configPath,
+		ConfigFile: configPath,
 	}
 	producerLib.InitConfig()
 	err := producerLib.CreateProducerInstance()
@@ -83,7 +85,7 @@ func (p *ProductMySQLRepo) Create(ctx context.Context, data *entities_pb.Product
 	if err != nil {
 		fmt.Println("parse data has error")
 	}
-	p.producer.ProduceMessage(&topic, string(raw))
+	p.producer.ProduceMessage(topic, string(raw))
 
 	return productDAO, nil
 }
