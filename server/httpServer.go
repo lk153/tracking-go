@@ -8,10 +8,10 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 
+	errorsLib "github.com/lk153/go-lib/errors"
 	httplib "github.com/lk153/go-lib/http"
 	services_pb "github.com/lk153/proto-tracking-gen/go/services"
 
-	"factory/exam/handler"
 	"factory/exam/utils/gateway"
 	"factory/exam/utils/shutdown"
 )
@@ -25,13 +25,17 @@ type HTTPServer struct {
 //HTTPProvider ...
 func HTTPProvider(
 	ctx context.Context,
-	productHandler *handler.ProductHandler,
 	prodPBHandler services_pb.ProductServiceServer,
+	taskPBHandler services_pb.TaskServiceServer,
 ) (*HTTPServer, error) {
 	router := httplib.NewHTTPBuilder()
 
 	gateway := runtime.NewServeMux(gateway.DefaultGateMuxOpts()...)
-	err := services_pb.RegisterProductServiceHandlerServer(ctx, gateway, prodPBHandler)
+	err := errorsLib.ErrAny(
+		services_pb.RegisterProductServiceHandlerServer(ctx, gateway, prodPBHandler),
+		services_pb.RegisterTaskServiceHandlerServer(ctx, gateway, taskPBHandler),
+	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +50,6 @@ func HTTPProvider(
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("welcome changes"))
 		})
-		r.Get("/products", productHandler.Get)
 	})
 
 	server := &http.Server{

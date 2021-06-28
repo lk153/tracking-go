@@ -27,9 +27,11 @@ func buildServer(ctx context.Context) (*server.Manager, error) {
 	productMySQLRepo := mysql.NewProductMySQLRepo(connPool)
 	redisCache := cache.NewRedisCacheRepo()
 	productService := services.ProductProvider(productMySQLRepo, redisCache)
-	productHandler := handler.ProductHandlerProvider(productService)
 	productPBHandler := handler.NewProductPBHandler(productService)
-	httpServer, err := server.HTTPProvider(ctx, productHandler, productPBHandler)
+	taskMySQLRepo := mysql.NewTaskMySQLRepo(connPool)
+	taskService := services.TaskProvider(taskMySQLRepo, redisCache)
+	taskPBHandler := handler.NewTaskPBHandler(taskService)
+	httpServer, err := server.HTTPProvider(ctx, productPBHandler, taskPBHandler)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +40,7 @@ func buildServer(ctx context.Context) (*server.Manager, error) {
 	if err != nil {
 		return nil, err
 	}
-	kafkaConsumer, err := server.NewKafkaConsumer(productService, productMySQLRepo)
+	kafkaConsumer, err := server.NewKafkaConsumer(productService, taskService, productMySQLRepo)
 	if err != nil {
 		return nil, err
 	}

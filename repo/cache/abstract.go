@@ -5,22 +5,20 @@ import (
 	"fmt"
 	"time"
 
-	"factory/exam/repo"
-
 	"encoding/json"
 
 	"github.com/go-redis/redis/v8"
 )
 
 const (
-	productFullInfoTTL = 3 * 24 * time.Hour
-	productCachePrefix = "prod_cache"
+	FullInfoTTL = 3 * 24 * time.Hour
+	CachePrefix = "cache"
 )
 
 //CacheInteface ...
 type CacheInteface interface {
-	Get(ctx context.Context, key string) (*repo.ProductModel, error)
-	Set(ctx context.Context, key string, value *repo.ProductModel) error
+	Get(ctx context.Context, key string) (interface{}, error)
+	Set(ctx context.Context, key string, value interface{}) error
 }
 
 var redisClient *redis.Client
@@ -47,10 +45,10 @@ func NewRedisCacheRepo() *RedisCache {
 }
 
 //Get ...
-func (r *RedisCache) Get(ctx context.Context, key string) (*repo.ProductModel, error) {
+func (r *RedisCache) Get(ctx context.Context, key string) (model interface{}, err error) {
 	pipeline := r.rdb.Pipeline()
-	cmd := pipeline.Get(ctx, fmt.Sprintf("%v_%v", productCachePrefix, key))
-	_, err := pipeline.Exec(ctx)
+	cmd := pipeline.Get(ctx, fmt.Sprintf("%v_%v", CachePrefix, key))
+	_, err = pipeline.Exec(ctx)
 	if err != nil {
 		if err == redis.Nil {
 			return nil, nil
@@ -68,16 +66,15 @@ func (r *RedisCache) Get(ctx context.Context, key string) (*repo.ProductModel, e
 		return nil, nil
 	}
 
-	var p *repo.ProductModel
-	if err = json.Unmarshal(buf, &p); err != nil {
+	if err = json.Unmarshal(buf, &model); err != nil {
 		return nil, fmt.Errorf("unmarshal product: %v", err)
 	}
 
-	return p, nil
+	return model, nil
 }
 
 //Set ...
-func (r *RedisCache) Set(ctx context.Context, key string, value *repo.ProductModel) error {
+func (r *RedisCache) Set(ctx context.Context, key string, value interface{}) error {
 	pipeline := r.rdb.Pipeline()
 	cmds := []*redis.StatusCmd{}
 	cacheData, err := json.Marshal(&value)
@@ -85,7 +82,7 @@ func (r *RedisCache) Set(ctx context.Context, key string, value *repo.ProductMod
 		return fmt.Errorf("set cache marshal error: %v", err)
 	}
 
-	cmds = append(cmds, pipeline.Set(ctx, fmt.Sprintf("%v_%v", productCachePrefix, key), string(cacheData), productFullInfoTTL))
+	cmds = append(cmds, pipeline.Set(ctx, fmt.Sprintf("%v_%v", CachePrefix, key), string(cacheData), FullInfoTTL))
 	_, err = pipeline.Exec(ctx)
 	if err != nil {
 		return fmt.Errorf("set cache exec error: %v", err)

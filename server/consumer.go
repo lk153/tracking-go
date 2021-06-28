@@ -19,20 +19,28 @@ const (
 	SASL_PASSWORD     = "sasl.password"
 )
 
+const (
+	PRODUCT_KAFKA_TOPIC = "testing_153_product"
+	TASK_KAFKA_TOPIC    = "testing_153_task"
+)
+
 //KafkaConsumer ...
 type KafkaConsumer struct {
-	cache services.ProductServiceInterface
-	repo  repo.ProductRepoInterface
+	productService services.ProductServiceInterface
+	taskService    services.TaskServiceInterface
+	repo           repo.ProductRepoInterface
 }
 
 //NewKafkaConsumer ...
 func NewKafkaConsumer(
-	cache services.ProductServiceInterface,
+	productService services.ProductServiceInterface,
+	taskService services.TaskServiceInterface,
 	repo repo.ProductRepoInterface,
 ) (*KafkaConsumer, error) {
 	return &KafkaConsumer{
-		cache: cache,
-		repo:  repo,
+		productService: productService,
+		taskService:    taskService,
+		repo:           repo,
 	}, nil
 }
 
@@ -43,23 +51,45 @@ func (kc *KafkaConsumer) Close() error {
 
 //Start ...
 func (kc *KafkaConsumer) Start() error {
-	consumerOutput := make(chan []byte, 1)
-	go func() {
-		kafkaLib.Start(consumerOutput)
-	}()
+	kc.consumeProduct()
+	kc.consumeTask()
 
+	return nil
+}
+
+func (kc *KafkaConsumer) consumeProduct() {
+	consumerProductOutput := make(chan []byte, 1)
 	go func() {
-		for item := range consumerOutput {
-			fmt.Printf("Consumer Set Cache: %v\n", string(item))
+		kafkaLib.Start(consumerProductOutput, PRODUCT_KAFKA_TOPIC)
+	}()
+	go func() {
+		for product := range consumerProductOutput {
+			fmt.Printf("Consumer Set Cache: %v\n", string(product))
 			productModel := &repo.ProductModel{}
-			err := json.Unmarshal([]byte(item), productModel)
+			err := json.Unmarshal([]byte(product), productModel)
 			if err != nil {
 				fmt.Printf("Unmarshal consumed product has error: %v\n", err)
 			}
-
-			kc.cache.GetProduct(context.Background(), int(productModel.ID))
+			kc.productService.GetProduct(context.Background(), int(productModel.ID))
 		}
 	}()
 
-	return nil
+}
+
+func (kc *KafkaConsumer) consumeTask() {
+	consumerTaskOutput := make(chan []byte, 1)
+	go func() {
+		kafkaLib.Start(consumerTaskOutput, TASK_KAFKA_TOPIC)
+	}()
+	go func() {
+		for task := range consumerTaskOutput {
+			fmt.Printf("Consumer Set Cache: %v\n", string(task))
+			taskModel := &repo.TaskModel{}
+			err := json.Unmarshal([]byte(task), taskModel)
+			if err != nil {
+				fmt.Printf("Unmarshal consumed task has error: %v\n", err)
+			}
+			kc.taskService.GetSingle(context.Background(), int(taskModel.ID))
+		}
+	}()
 }

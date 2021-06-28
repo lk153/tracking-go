@@ -7,45 +7,47 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 
-	services_pb "github.com/lk153/proto-tracking-gen/go/services"
+	servicesPb "github.com/lk153/proto-tracking-gen/go/services"
 )
 
-//ProductPBHandler ...
+//ProductPBHandler
 type ProductPBHandler struct {
-	services_pb.UnimplementedProductServiceServer
+	servicesPb.UnimplementedProductServiceServer
 	productService services.ProductServiceInterface
 	tracer         trace.Tracer
 }
 
-//NewProductPBHandler ...
+//NewProductPBHandler
 func NewProductPBHandler(
 	productService services.ProductServiceInterface,
 ) *ProductPBHandler {
-	tracer := otel.Tracer("ProductHandlerProvider")
+	tracer := otel.Tracer("NewProductPBHandler")
 	return &ProductPBHandler{
 		tracer:         tracer,
 		productService: productService,
 	}
 }
 
-//Get ...
+//Get
 func (p *ProductPBHandler) Get(ctx context.Context,
-	req *services_pb.ProductRequest) (*services_pb.ProductResponse, error) {
+	req *servicesPb.ProductRequest) (*servicesPb.ProductResponse, error) {
 	ctx, span := p.tracer.Start(ctx, "Get")
 	defer span.End()
 
 	limit := req.GetLimit()
-	products := p.productService.GetProducts(ctx, int(limit))
+	page := req.GetPage()
+	ids := req.GetIds()
+	products := p.productService.GetProducts(ctx, int(limit), int(page), ids)
 	data := p.productService.Transform(products)
 
-	return &services_pb.ProductResponse{
+	return &servicesPb.ProductResponse{
 		Data: data,
 	}, nil
 }
 
-//GetSingle ...
+//GetSingle
 func (p *ProductPBHandler) GetSingle(ctx context.Context,
-	req *services_pb.SingleProductRequest) (*services_pb.SingleProductResponse, error) {
+	req *servicesPb.SingleProductRequest) (*servicesPb.SingleProductResponse, error) {
 	ctx, span := p.tracer.Start(ctx, "GetSingle")
 	defer span.End()
 
@@ -53,13 +55,14 @@ func (p *ProductPBHandler) GetSingle(ctx context.Context,
 	product := p.productService.GetProduct(ctx, int(ID))
 	data := p.productService.TransformSingle(product)
 
-	return &services_pb.SingleProductResponse{
+	return &servicesPb.SingleProductResponse{
 		Data: data,
 	}, nil
 }
 
+//Create
 func (p *ProductPBHandler) Create(ctx context.Context,
-	req *services_pb.ProductCreateRequest) (*services_pb.ProductCreateResponse, error) {
+	req *servicesPb.ProductCreateRequest) (*servicesPb.ProductCreateResponse, error) {
 	ctx, span := p.tracer.Start(ctx, "Create")
 	defer span.End()
 
@@ -67,7 +70,7 @@ func (p *ProductPBHandler) Create(ctx context.Context,
 	product := p.productService.CreateProduct(ctx, data)
 	data = p.productService.TransformSingle(product)
 
-	return &services_pb.ProductCreateResponse{
+	return &servicesPb.ProductCreateResponse{
 		Data: data,
 	}, nil
 }
