@@ -29,7 +29,7 @@ func ProductRepoProvider() *ProductRepoImp {
 }
 
 //GetProduct ...
-func (p *ProductRepoImp) GetProduct(ctx context.Context, limit int) (productDAO []*ProductModel, err error) {
+func (p *ProductRepoImp) Get(ctx context.Context, limit int, page int, ids []uint64) (productDAO []*ProductModel, err error) {
 	_, span := p.tracer.Start(ctx, "GetProduct")
 	defer span.End()
 

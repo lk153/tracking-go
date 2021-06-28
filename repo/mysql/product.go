@@ -6,6 +6,7 @@ import (
 	"factory/exam/infra"
 	"factory/exam/repo"
 	"fmt"
+	"os"
 
 	kafkaLib "github.com/lk153/go-lib/kafka"
 	"github.com/lk153/go-lib/kafka/ccloud"
@@ -13,20 +14,19 @@ import (
 )
 
 var _ repo.ProductRepoInterface = &ProductMySQLRepo{}
-var configPath *string
-var topic *string
 
 //ProductMySQLRepo ...
 type ProductMySQLRepo struct {
 	db       *infra.ConnPool
 	producer *kafkaLib.KafkaProducer
+	topic    *string
 }
 
 //NewProductMySQLRepo ...
 func NewProductMySQLRepo(
 	db *infra.ConnPool,
 ) *ProductMySQLRepo {
-	configPath, topic = ccloud.ParseArgs()
+	configPath = ccloud.ParseArgs()
 	producerLib := &kafkaLib.KafkaProducer{
 		ConfigFile: configPath,
 	}
@@ -34,16 +34,35 @@ func NewProductMySQLRepo(
 	err := producerLib.CreateProducerInstance()
 	if err != nil {
 		fmt.Println("create producer has error")
+		os.Exit(1)
 	}
+	producerLib.CreateTopic(PRODUCT_KAFKA_TOPIC)
+	topic := PRODUCT_KAFKA_TOPIC
 	return &ProductMySQLRepo{
 		db:       db,
 		producer: producerLib,
+		topic:    &topic,
 	}
 }
 
 //GetProduct ...
-func (p *ProductMySQLRepo) GetProduct(ctx context.Context, limit int) (productDAO []*repo.ProductModel, err error) {
-	if err = p.db.Conn.WithContext(ctx).Limit(limit).Find(&productDAO).Error; err != nil {
+func (p *ProductMySQLRepo) Get(ctx context.Context, limit int, page int, ids []uint64) (productDAO []*repo.ProductModel, err error) {
+	tx := p.db.Conn.WithContext(ctx)
+	if limit != 0 {
+		tx = tx.Limit(limit)
+	}
+
+	if page != 0 {
+		tx = tx.Offset(page * limit)
+	}
+
+	if ids != nil {
+		tx = tx.Find(&productDAO, ids)
+	} else {
+		tx = tx.Find(&productDAO)
+	}
+
+	if err = tx.Error; err != nil {
 		return nil, err
 	}
 
@@ -56,15 +75,6 @@ func (p *ProductMySQLRepo) Find(ctx context.Context, id int) (productDAO *repo.P
 	}
 
 	return productDAO, nil
-}
-
-//GetProductBy ...
-func (p *ProductMySQLRepo) GetProductBy(ctx context.Context, query string) (productDAO *repo.ProductModel, err error) {
-	if err = p.db.Conn.WithContext(ctx).Find(&productDAO).Limit(1).Error; err != nil {
-		return nil, err
-	}
-
-	return nil, nil
 }
 
 //Create ...
@@ -85,7 +95,7 @@ func (p *ProductMySQLRepo) Create(ctx context.Context, data *entities_pb.Product
 	if err != nil {
 		fmt.Println("parse data has error")
 	}
-	p.producer.ProduceMessage(topic, string(raw))
+	p.producer.ProduceMessage(p.topic, string(raw))
 
 	return productDAO, nil
 }

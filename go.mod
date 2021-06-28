@@ -12,8 +12,8 @@ require (
 	github.com/go-redis/redis/v8 v8.8.3
 	github.com/google/wire v0.5.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.3.0
-	github.com/lk153/go-lib v1.0.25
-	github.com/lk153/proto-tracking-gen v0.0.3
+	github.com/lk153/go-lib v0.0.4
+	github.com/lk153/proto-tracking-gen v0.0.4
 	github.com/stretchr/testify v1.7.0
 	go.opentelemetry.io/otel v0.20.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.20.0

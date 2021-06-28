@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"encoding/json"
 	"factory/exam/repo"
 	"factory/exam/repo/cache"
 	"fmt"
@@ -30,8 +31,8 @@ type ProductService struct {
 }
 
 //GetProducts ...
-func (ps *ProductService) GetProducts(ctx context.Context, limit int) []*repo.ProductModel {
-	products, err := ps.productRepo.GetProduct(ctx, limit)
+func (ps *ProductService) GetProducts(ctx context.Context, limit int, page int, ids []uint64) []*repo.ProductModel {
+	products, err := ps.productRepo.Get(ctx, limit, page, ids)
 	if err != nil {
 		return nil
 	}
@@ -42,7 +43,6 @@ func (ps *ProductService) GetProducts(ctx context.Context, limit int) []*repo.Pr
 //GetProduct ...
 func (ps *ProductService) GetProduct(ctx context.Context, id int) *repo.ProductModel {
 	product, err := ps.cacheRepo.Get(ctx, strconv.Itoa(id))
-
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -50,7 +50,7 @@ func (ps *ProductService) GetProduct(ctx context.Context, id int) *repo.ProductM
 
 	if product != nil {
 		fmt.Printf("GetCache: %v\n", product)
-		return product
+		return ps.parseData(product.(map[string]interface{}))
 	}
 
 	product, err = ps.productRepo.Find(ctx, id)
@@ -59,10 +59,26 @@ func (ps *ProductService) GetProduct(ctx context.Context, id int) *repo.ProductM
 		return nil
 	}
 
-	err = ps.cacheRepo.Set(ctx, strconv.Itoa(id), product)
+	err = ps.cacheRepo.Set(ctx, fmt.Sprintf("product_%s", strconv.Itoa(id)), product)
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	return product.(*repo.ProductModel)
+}
+
+func (ps *ProductService) parseData(data map[string]interface{}) (product *repo.ProductModel) {
+	jsonbody, err := json.Marshal(data)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	if err := json.Unmarshal(jsonbody, &product); err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	return product
 }
 
@@ -71,10 +87,6 @@ func (ps *ProductService) CreateProduct(ctx context.Context, data *entities_pb.P
 	if err != nil {
 		return nil
 	}
-
-	// if product.ID != 0 {
-	// 	ps.cacheRepo.Set(ctx, strconv.Itoa(int(product.ID)), product)
-	// }
 
 	return product
 }
