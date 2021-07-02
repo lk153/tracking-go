@@ -56,6 +56,7 @@ func (t *TaskMySQLRepo) Get(ctx context.Context, limit int, page int, ids []uint
 		tx = tx.Offset(page * limit)
 	}
 
+	tx = tx.Order("startAt")
 	if ids != nil {
 		tx = tx.Find(&taskDAO, ids)
 	} else {
